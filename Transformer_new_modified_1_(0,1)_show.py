@@ -138,9 +138,9 @@ class CrossLayerAdaptiveAttentionFusion(nn.Module):
 
 
 
-class CLATransformer(nn.Module):
+class DGCLATransformer(nn.Module):
     def __init__(self, num_layers, embed_dim, num_heads, hidden_dim, dropout):
-        super(CLATransformer, self).__init__()
+        super(DGCLATransformer, self).__init__()
         self.transformer_layers = nn.ModuleList([
             TransformerLayer(embed_dim, num_heads, hidden_dim, dropout) for _ in range(num_layers)
         ])
@@ -158,7 +158,7 @@ class CLATransformer(nn.Module):
 
 
 # --------------------------------------------------
-class CompleteCLATransformerModel(nn.Module):
+class CompleteDGCLATransformerModel(nn.Module):
     def __init__(self, cat_dims, num_features, embedding_dim=16, d_model=256, num_layers=3, num_heads=8, hidden_dim=512,
                  dropout=0.1):
         super().__init__()
@@ -173,7 +173,7 @@ class CompleteCLATransformerModel(nn.Module):
 
         self.input_proj = nn.Linear(input_size, d_model)
 
-        self.cla_transformer = CLATransformer(
+        self.cla_transformer = DGCLATransformer(
             num_layers=num_layers,
             embed_dim=d_model,
             num_heads=num_heads,
@@ -317,7 +317,7 @@ if __name__ == "__main__":
     cat_dims = [len(dataset.cat_dict[col]) for col in categorical_features]
     print(f"cat_dims: {cat_dims}")
 
-    model = CompleteCLATransformerModel(
+    model = CompleteDGCLATransformerModel(
         cat_dims=cat_dims,
         num_features=len(numerical_features),
         embedding_dim=16
